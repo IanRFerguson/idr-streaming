@@ -44,7 +44,7 @@ def run_migrations_offline() -> None:
     script output.
 
     """
-    url = os.environ["DATABASE_URL"]
+    url = os.environ["LOCAL_DATABASE_URL"]
     context.configure(
         url=url,
         target_metadata=target_metadata,
@@ -63,7 +63,9 @@ def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
-    connectable = create_engine(os.environ["DATABASE_URL"], poolclass=pool.NullPool)
+    connectable = create_engine(
+        os.environ["LOCAL_DATABASE_URL"], poolclass=pool.NullPool
+    )
     with connectable.connect() as connection:
         context.configure(connection=connection, target_metadata=target_metadata)
 

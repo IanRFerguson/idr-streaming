@@ -38,6 +38,6 @@ def receive_pii(session: Session):
 #####
 
 if __name__ == "__main__":
-    engine = create_engine(os.environ["DATABASE_URL"], echo=True)
+    engine = create_engine(os.environ["DATABASE_URL"])
     with Session(bind=engine) as session:
         receive_pii(session=session)

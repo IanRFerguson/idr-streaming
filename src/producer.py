@@ -20,7 +20,7 @@ producer = KafkaProducer(
 
 def send_pii(session: Session):
     while True:
-        fake = Faker()
+        fake = Faker("en_US")
         pii_data = {
             "name": fake.name(),
             "address": fake.address(),
@@ -33,12 +33,12 @@ def send_pii(session: Session):
 
         producer.send("pii_topic", new_pii.id)
         logger.info(f"Sent PII Data: {pii_data['name']}")
-        sleep(2)  # Send data every 2 seconds
+        sleep(2)
 
 
 #####
 
 if __name__ == "__main__":
-    engine = create_engine(os.environ["DATABASE_URL"], echo=True)
+    engine = create_engine(os.environ["DATABASE_URL"])
     with Session(bind=engine) as session:
         send_pii(session=session)
