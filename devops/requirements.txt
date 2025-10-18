@@ -1,6 +1,10 @@
 kafka-python
 faker
+Flask
+folium
+gunicorn
 sqlalchemy
+pandas
 psycopg2-binary
 rq
 redis

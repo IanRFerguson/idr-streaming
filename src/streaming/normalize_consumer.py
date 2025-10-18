@@ -1,15 +1,15 @@
 import json
 import os
+from typing import Tuple
 
 from kafka import KafkaConsumer
+from scourgify import normalize_address_record
+from scourgify.exceptions import UnParseableAddressError
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
+from data.model import NormalizedPIIModel, PIIModel
 from utilities.logger import logger
-from data.model import PIIModel, NormalizedPIIModel
-from scourgify import normalize_address_record
-from scourgify.exceptions import UnParseableAddressError
-from typing import Tuple
 
 #####
 
@@ -70,7 +70,9 @@ def clean_email_address(email: str) -> str:
 def clean_and_write_normalized_data(session: Session, pii_data: PIIModel):
     # Normalize address using scourgify
     try:
-        clean_address_data = normalize_address_record(pii_data.address)
+        clean_address_data = normalize_address_record(
+            pii_data.address.replace("\n", " ")
+        )
     except UnParseableAddressError as e:
         logger.error(f"Error normalizing address: {e}")
         clean_address_data = {}

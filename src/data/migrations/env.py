@@ -2,13 +2,12 @@ import sys
 
 sys.path.append("..")
 
+import os
 from logging.config import fileConfig
 
-from sqlalchemy import create_engine
-from sqlalchemy import pool
-
-import os
 from alembic import context
+from sqlalchemy import create_engine, pool
+
 from data.model import Base
 
 # this is the Alembic Config object, which provides

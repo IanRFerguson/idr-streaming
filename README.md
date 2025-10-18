@@ -17,34 +17,34 @@ You can run this service independently with `docker compose up kafka`.
 
 Both of our Python services use the same Docker image with different entrypoints.
 
-```
+```bash
 # This service creates the mock PII
-idr-producer:
-    build:
-      context: .
-      dockerfile: devops/Dockerfile
-    entrypoint: ["python", "src/producer.py"]
-    volumes:
-      - .:/app
-    env_file:
-      - .env
-    depends_on:
-      kafka:
-        condition: service_healthy
+producer:
+  build:
+    context: .
+    dockerfile: devops/Dockerfile
+  entrypoint: ["python", "src/producer.py"]
+  volumes:
+    - .:/app
+  env_file:
+    - .env
+  depends_on:
+    kafka:
+      condition: service_healthy
 
-# This service runs our IDR process
-idr-consumer:
-    build:
-        context: .
-        dockerfile: devops/Dockerfile
-    entrypoint: ["python", "src/consumer.py"]
-    volumes:
-        - .:/app
-    env_file:
-        - .env
-    depends_on:
-        kafka:
-        condition: service_healthy
+# This service normalizes the incoming data stream
+normalize-consumer:
+  build:
+    context: .
+    dockerfile: devops/Dockerfile
+  entrypoint: ["python", "src/normalize_consumer.py"]
+  volumes:
+    - .:/app
+  env_file:
+    - .env
+  depends_on:
+    kafka:
+      condition: service_healthy
 ```
 
 They rely on the Kafka broker to be healthy - if it goes down, the streaming process will break.
@@ -52,6 +52,9 @@ They rely on the Kafka broker to be healthy - if it goes down, the streaming pro
 #### Producer
 The producer uses `Faker` to generate mock PII for our purposes. It writes the PII to a local Postgres database, and artificially grabs an existing record one in `n` times (to mock a return user entering the system).
 
-
+`Faker` produces a random set of PII data like so:
+```python
+{'name': 'Sandra Carter', 'address': '686 Thompson Bypass Apt. 817\nJamesfort, IL 19819'}
+```
 
 #### Consumer

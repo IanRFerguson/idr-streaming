@@ -7,8 +7,8 @@ from kafka import KafkaProducer
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
-from utilities.logger import logger
 from data.model import PIIModel
+from utilities.logger import logger
 
 #####
 
