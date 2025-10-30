@@ -1,5 +1,6 @@
 import json
 import os
+import random
 from time import sleep
 
 from faker import Faker
@@ -33,7 +34,7 @@ def send_pii(session: Session):
 
         producer.send("pii_topic", new_pii.id)
         logger.info(f"Sent PII Data: {pii_data['name']}")
-        sleep(2)
+        sleep(random.randint(0, 5) / 10)  # Simulate variable data generation rate
 
 
 #####

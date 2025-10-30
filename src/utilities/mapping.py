@@ -33,7 +33,7 @@ def rebuild_map(output_path: str) -> None:
     state_map.save(output_path)
 
 
-def get_state_counts() -> pd.DataFrame:
+def get_state_counts(global_count: bool = False) -> pd.DataFrame:
     """
     Retrieves the counts of normalized PII entries by state.
 
@@ -42,19 +42,29 @@ def get_state_counts() -> pd.DataFrame:
     """
     # Implementation of the logic to get state counts goes here
     engine = create_engine(os.environ["DATABASE_URL"])
-    sql = """
-    with
-        global_count as (
-            select count(*) as global_count from public.normalized_pii_data
-        )
-    select 
-        state, 
-        (count(*) * 1.0 / global_count.global_count) as count 
-    from public.normalized_pii_data 
-    join global_count on true
-    where state is not null 
-    group by state, global_count.global_count;
-    """
+    if global_count:
+        sql = """
+        with
+            global_count as (
+                select count(*) as global_count from public.normalized_pii_data
+            )
+        select 
+            state, 
+            (count(*) * 1.0 / global_count.global_count) as count 
+        from public.normalized_pii_data 
+        join global_count on true
+        where state is not null 
+        group by state, global_count.global_count;
+        """
+    else:
+        sql = """
+        select 
+            state, 
+            count(*) as count 
+        from public.normalized_pii_data 
+        where state is not null 
+        group by state;
+        """
 
     with engine.connect() as conn:
         resp = pd.read_sql(sql=sql, con=conn)

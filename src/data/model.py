@@ -10,7 +10,7 @@ class PIIModel(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
     address = Column(String)
-    email = Column(String, unique=True)
+    email = Column(String)
     phone_number = Column(String)
     created_at = Column(DateTime, default=func.now())
 

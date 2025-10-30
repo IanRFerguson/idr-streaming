@@ -1,7 +1,6 @@
 import os
-import time
 
-from flask import Flask, make_response, redirect, render_template, url_for
+from flask import Flask, redirect, render_template, url_for
 
 from utilities.logger import logger
 from utilities.mapping import rebuild_map
